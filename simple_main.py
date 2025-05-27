@@ -43,7 +43,7 @@ HTML_TEMPLATE = """
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="Tik To Mp4 - Free TikTok Video Downloader">
-    <meta property="twitter:description" content="Best Tik To Mp4 converter. Download TikTok videos without watermark for free."
+    <meta property="twitter:description" content="Best Tik To Mp4 converter. Download TikTok videos without watermark for free.">
     <style>
         * {
             margin: 0;
