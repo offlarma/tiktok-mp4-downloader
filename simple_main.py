@@ -33,6 +33,10 @@ HTML_TEMPLATE = """
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="description" content="Tik To Mp4 - Free TikTok video downloader without watermark. Download TikTok videos to MP4 format instantly. Best Tik To Mp4 converter online.">
     <meta name="keywords" content="Tik To Mp4, TikTok downloader, download TikTok video, TikTok to MP4, remove watermark, free TikTok download, Tik To Mp4 converter, TikTok video saver">
+    <meta name="author" content="Tik To Mp4">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
+    <link rel="canonical" href="https://www.tikto-mp4.com/">
     <title>Tik To Mp4 - Free TikTok Video Downloader Without Watermark | Best Tik To Mp4 Converter</title>
     
     <!-- Favicon -->
@@ -82,6 +86,35 @@ HTML_TEMPLATE = """
     <!-- Google Funding Choices (CMP) -->
     <script async src="https://fundingchoicesmessages.google.com/i/pub-2184814096326522?ers=1" nonce="RANDOM_NONCE"></script>
     <script nonce="RANDOM_NONCE">(function() {function signalGooglefcPresent() {if (!window.frames['googlefcPresent']) {if (document.body) {const iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe);} else {setTimeout(signalGooglefcPresent, 0);}}}signalGooglefcPresent();})();</script>
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Tik To Mp4",
+        "description": "Free TikTok video downloader without watermark. Download TikTok videos to MP4 format instantly.",
+        "url": "https://www.tikto-mp4.com",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "featureList": [
+            "Download TikTok videos without watermark",
+            "Convert TikTok to MP4",
+            "Free online converter",
+            "Works on all devices",
+            "No registration required"
+        ],
+        "author": {
+            "@type": "Organization",
+            "name": "Tik To Mp4"
+        }
+    }
+    </script>
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
