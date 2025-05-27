@@ -35,6 +35,10 @@ HTML_TEMPLATE = """
     <meta name="keywords" content="Tik To Mp4, TikTok downloader, download TikTok video, TikTok to MP4, remove watermark, free TikTok download, Tik To Mp4 converter, TikTok video saver">
     <title>Tik To Mp4 - Free TikTok Video Downloader Without Watermark | Best Tik To Mp4 Converter</title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%23ff6b6b;stop-opacity:1' /><stop offset='50%25' style='stop-color:%234ecdc4;stop-opacity:1' /><stop offset='100%25' style='stop-color:%2345b7d1;stop-opacity:1' /></linearGradient></defs><circle cx='50' cy='50' r='45' fill='url(%23grad1)' stroke='white' stroke-width='3'/><text x='50' y='65' font-family='Arial, sans-serif' font-size='45' font-weight='bold' text-anchor='middle' fill='white'>🎵</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%23ff6b6b;stop-opacity:1' /><stop offset='50%25' style='stop-color:%234ecdc4;stop-opacity:1' /><stop offset='100%25' style='stop-color:%2345b7d1;stop-opacity:1' /></linearGradient></defs><circle cx='50' cy='50' r='45' fill='url(%23grad1)' stroke='white' stroke-width='3'/><text x='50' y='65' font-family='Arial, sans-serif' font-size='45' font-weight='bold' text-anchor='middle' fill='white'>🎵</text></svg>">
+    
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Tik To Mp4 - Free TikTok Video Downloader">
