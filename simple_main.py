@@ -496,20 +496,42 @@ class UltimateDownloader:
                             except json.JSONDecodeError:
                                 continue
                     
-                    # Fallback: cerca pattern diretti
-                    video_patterns = [
+                    # Fallback: cerca pattern diretti (priorità agli URL senza watermark)
+                    priority_patterns = [
                         r'"downloadAddr":"([^"]+)"',
+                        r'"download_addr":"([^"]+)"',
+                        r'"downloadUrl":"([^"]+)"',
+                        r'"download_url":"([^"]+)"',
+                    ]
+                    
+                    fallback_patterns = [
                         r'"playAddr":"([^"]+)"',
                         r'playAddr":"([^"]+)"',
-                        r'"download_addr":"([^"]+)"',
+                        r'"play_addr":"([^"]+)"',
+                        r'"playUrl":"([^"]+)"',
                         r'src="([^"]*\.mp4[^"]*)"',
                     ]
                     
-                    for pattern in video_patterns:
+                    # Prima prova con i pattern senza watermark
+                    for pattern in priority_patterns:
                         matches = re.findall(pattern, content)
                         if matches:
                             video_url = matches[0].replace('\\u002F', '/').replace('\\/', '/')
                             video_url = unquote(video_url)
+                            print(f"✅ Found downloadAddr URL: {video_url[:100]}...")
+                            return {
+                                'success': True,
+                                'download_url': video_url,
+                                'title': 'tiktok_video',
+                            }
+                    
+                    # Se non trova nulla, usa i pattern con watermark
+                    for pattern in fallback_patterns:
+                        matches = re.findall(pattern, content)
+                        if matches:
+                            video_url = matches[0].replace('\\u002F', '/').replace('\\/', '/')
+                            video_url = unquote(video_url)
+                            print(f"⚠️ Using playAddr URL (may have watermark): {video_url[:100]}...")
                             return {
                                 'success': True,
                                 'download_url': video_url,
@@ -520,23 +542,30 @@ class UltimateDownloader:
         return None
 
     def _extract_video_urls_from_data(self, data: dict) -> list:
-        urls = []
+        download_urls = []  # URLs senza watermark
+        play_urls = []      # URLs con watermark (fallback)
         
-        def search_recursive(obj, keys_to_find):
+        def search_recursive(obj, priority_keys, fallback_keys):
             if isinstance(obj, dict):
                 for key, value in obj.items():
-                    if key in keys_to_find and isinstance(value, str) and 'http' in value and '.mp4' in value:
-                        urls.append(value)
+                    if key in priority_keys and isinstance(value, str) and 'http' in value and '.mp4' in value:
+                        download_urls.append(value)
+                    elif key in fallback_keys and isinstance(value, str) and 'http' in value and '.mp4' in value:
+                        play_urls.append(value)
                     elif isinstance(value, (dict, list)):
-                        search_recursive(value, keys_to_find)
+                        search_recursive(value, priority_keys, fallback_keys)
             elif isinstance(obj, list):
                 for item in obj:
-                    search_recursive(item, keys_to_find)
+                    search_recursive(item, priority_keys, fallback_keys)
         
-        keys_to_find = ['downloadAddr', 'playAddr', 'download_addr', 'play_addr', 'url', 'src']
-        search_recursive(data, keys_to_find)
+        # Priorità: downloadAddr (senza watermark) > playAddr (con watermark)
+        priority_keys = ['downloadAddr', 'download_addr', 'downloadUrl', 'download_url']
+        fallback_keys = ['playAddr', 'play_addr', 'playUrl', 'play_url', 'url', 'src']
         
-        return urls
+        search_recursive(data, priority_keys, fallback_keys)
+        
+        # Restituisci prima gli URL senza watermark, poi quelli con watermark
+        return download_urls + play_urls
 
     def _extract_title_from_data(self, data: dict) -> str:
         def search_title(obj):
