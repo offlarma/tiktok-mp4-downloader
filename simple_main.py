@@ -31,8 +31,19 @@ HTML_TEMPLATE = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="description" content="Tik To Mp4 - Download TikTok videos without watermark easily and quickly">
-    <title>Tik To Mp4 - Download TikTok Videos Without Watermark</title>
+    <meta name="description" content="Tik To Mp4 - Free TikTok video downloader without watermark. Download TikTok videos to MP4 format instantly. Best Tik To Mp4 converter online.">
+    <meta name="keywords" content="Tik To Mp4, TikTok downloader, download TikTok video, TikTok to MP4, remove watermark, free TikTok download, Tik To Mp4 converter, TikTok video saver">
+    <title>Tik To Mp4 - Free TikTok Video Downloader Without Watermark | Best Tik To Mp4 Converter</title>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Tik To Mp4 - Free TikTok Video Downloader">
+    <meta property="og:description" content="Best Tik To Mp4 converter. Download TikTok videos without watermark for free. Fast, reliable, and works on all devices.">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Tik To Mp4 - Free TikTok Video Downloader">
+    <meta property="twitter:description" content="Best Tik To Mp4 converter. Download TikTok videos without watermark for free."
     <style>
         * {
             margin: 0;
@@ -297,6 +308,38 @@ HTML_TEMPLATE = """
         <div class="success" id="success"></div>
         <div class="error" id="error"></div>
     </div>
+    
+    <!-- SEO Content Section -->
+    <div style="max-width: 400px; margin: 20px auto; padding: 20px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+        <h2 style="color: #333; margin-bottom: 15px; font-size: 1.5em;">🎥 Tik To Mp4 - Best TikTok Video Downloader</h2>
+        <p style="color: #666; line-height: 1.6; margin-bottom: 15px; font-size: 14px;">
+            <strong>Tik To Mp4</strong> is the best free TikTok video downloader that allows you to download TikTok videos without watermark. 
+            Our Tik To Mp4 converter works on all devices and provides high-quality MP4 downloads instantly.
+        </p>
+        
+        <h3 style="color: #333; margin: 20px 0 10px 0; font-size: 1.2em;">✨ Why Choose Tik To Mp4?</h3>
+        <ul style="color: #666; line-height: 1.8; margin-left: 20px; font-size: 13px;">
+            <li>🚫 <strong>Remove watermark</strong> from TikTok videos automatically</li>
+            <li>📱 <strong>Works on mobile</strong>, tablet, and desktop devices</li>
+            <li>⚡ <strong>Fast Tik To Mp4 conversion</strong> in seconds</li>
+            <li>🆓 <strong>Completely free</strong> TikTok downloader</li>
+            <li>🔒 <strong>No registration</strong> or login required</li>
+            <li>💾 <strong>High quality MP4</strong> format downloads</li>
+        </ul>
+        
+        <h3 style="color: #333; margin: 20px 0 10px 0; font-size: 1.2em;">📋 How to use Tik To Mp4:</h3>
+        <ol style="color: #666; line-height: 1.8; margin-left: 20px; font-size: 13px;">
+            <li>Copy the TikTok video URL from the app or website</li>
+            <li>Paste the URL in the Tik To Mp4 converter above</li>
+            <li>Click "Download Video" button</li>
+            <li>Wait for Tik To Mp4 to process and download your video</li>
+        </ol>
+        
+        <p style="color: #666; line-height: 1.6; margin-top: 20px; font-size: 12px;">
+            <strong>Keywords:</strong> Tik To Mp4, TikTok downloader, download TikTok video, TikTok to MP4, remove watermark, 
+            free TikTok download, Tik To Mp4 converter, TikTok video saver, online TikTok downloader, Tik To Mp4 online
+        </p>
+    </div>
 
     <script>
         document.getElementById('downloadForm').addEventListener('submit', async function(e) {
@@ -502,6 +545,10 @@ class UltimateDownloader:
                         r'"download_addr":"([^"]+)"',
                         r'"downloadUrl":"([^"]+)"',
                         r'"download_url":"([^"]+)"',
+                        r'"noWaterMarkDownload":"([^"]+)"',
+                        r'"noWatermark":"([^"]+)"',
+                        r'"hdDownload":"([^"]+)"',
+                        r'"originCover":"([^"]+\.mp4[^"]*)"',
                     ]
                     
                     fallback_patterns = [
@@ -604,15 +651,57 @@ class UltimateDownloader:
             print(f"Download failed: {e}")
         return None
 
+    async def try_alternative_api(self, url: str) -> Optional[dict]:
+        """Prova con API alternative per video senza watermark"""
+        try:
+            session = await self.create_session()
+            
+            # API 1: TikWM (affidabile per video senza watermark)
+            api_url = "https://www.tikwm.com/api/"
+            payload = {
+                'url': url,
+                'hd': 1
+            }
+            
+            async with session.post(api_url, data=payload) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get('code') == 0 and data.get('data'):
+                        video_data = data['data']
+                        # Priorità: hdplay (HD senza watermark) > play (normale)
+                        if 'hdplay' in video_data and video_data['hdplay']:
+                            print("✅ Found HD video without watermark from API")
+                            return {
+                                'success': True,
+                                'download_url': video_data['hdplay'],
+                                'title': video_data.get('title', 'tiktok_video')
+                            }
+                        elif 'play' in video_data and video_data['play']:
+                            print("⚠️ Found normal video from API (may have watermark)")
+                            return {
+                                'success': True,
+                                'download_url': video_data['play'],
+                                'title': video_data.get('title', 'tiktok_video')
+                            }
+        except Exception as e:
+            print(f"Alternative API failed: {e}")
+        
+        return None
+
     async def get_video_base64(self, url: str) -> Optional[dict]:
         try:
-            result = await self.scrape_tiktok_page(url)
-            if result and result.get('success'):
-                title = result.get('title', 'tiktok_video')
+            # Metodo 1: API alternativa (priorità per video senza watermark)
+            print("🔄 Trying alternative API for watermark-free video...")
+            alt_result = await self.try_alternative_api(url)
+            if alt_result and alt_result.get('success'):
+                title = alt_result.get('title', 'tiktok_video')
                 safe_title = "".join(c for c in title if c.isalnum() or c in (' ', '-', '_')).strip()
                 safe_title = safe_title[:50] if safe_title else 'tiktok_video'
                 
-                video_data = await self.download_video_bytes(result['download_url'])
+                download_url = alt_result['download_url']
+                print(f"🎯 Using API URL: {download_url[:100]}...")
+                
+                video_data = await self.download_video_bytes(download_url)
                 
                 if video_data:
                     # Convert to base64
@@ -623,6 +712,30 @@ class UltimateDownloader:
                         'filename': f"{safe_title}.mp4",
                         'size': len(video_data)
                     }
+            
+            # Metodo 2: Scraping diretto (fallback)
+            print("🔄 Trying direct scraping as fallback...")
+            result = await self.scrape_tiktok_page(url)
+            if result and result.get('success'):
+                title = result.get('title', 'tiktok_video')
+                safe_title = "".join(c for c in title if c.isalnum() or c in (' ', '-', '_')).strip()
+                safe_title = safe_title[:50] if safe_title else 'tiktok_video'
+                
+                download_url = result['download_url']
+                print(f"🎯 Using scraping URL: {download_url[:100]}...")
+                
+                video_data = await self.download_video_bytes(download_url)
+                
+                if video_data:
+                    # Convert to base64
+                    video_base64 = base64.b64encode(video_data).decode('utf-8')
+                    return {
+                        'success': True,
+                        'video_data': video_base64,
+                        'filename': f"{safe_title}.mp4",
+                        'size': len(video_data)
+                    }
+            
             return None
         except Exception as e:
             print(f"Get video base64 error: {e}")
