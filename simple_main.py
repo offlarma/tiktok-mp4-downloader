@@ -57,6 +57,10 @@ HTML_TEMPLATE = """
         }
     </script>
     
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2184814096326522"
+         crossorigin="anonymous"></script>
+    
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Tik To Mp4 - Free TikTok Video Downloader">
@@ -432,6 +436,16 @@ HTML_TEMPLATE = """
         <div class="error" id="error"></div>
     </div>
     
+    <!-- AdSense Banner Top -->
+    <div style="text-align: center; margin: 20px 0; max-width: 420px;">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-2184814096326522"
+             data-ad-slot="AUTO"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+    </div>
+    
     <!-- SEO Content Section -->
     <div class="seo-section">
         <h2>🎥 Tik To Mp4 - Best TikTok Video Downloader</h2>
@@ -462,6 +476,16 @@ HTML_TEMPLATE = """
             <strong>Keywords:</strong> Tik To Mp4, TikTok downloader, download TikTok video, TikTok to MP4, remove watermark, 
             free TikTok download, Tik To Mp4 converter, TikTok video saver, online TikTok downloader, Tik To Mp4 online
         </p>
+    </div>
+    
+    <!-- AdSense Banner Bottom -->
+    <div style="text-align: center; margin: 30px auto; max-width: 420px;">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-2184814096326522"
+             data-ad-slot="AUTO"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
     </div>
 
     <script>
@@ -592,6 +616,10 @@ HTML_TEMPLATE = """
         
         observer.observe(document.getElementById('success'), { attributes: true });
         observer.observe(document.getElementById('error'), { attributes: true });
+        
+        // Initialize AdSense ads
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
 </body>
 </html>
