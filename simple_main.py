@@ -42,10 +42,12 @@ HTML_TEMPLATE = """
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'GA_MEASUREMENT_ID');
+        // gtag already initialized above with consent mode
+        gtag('config', 'GA_MEASUREMENT_ID', {
+            'anonymize_ip': true,
+            'allow_google_signals': false,
+            'allow_ad_personalization_signals': false
+        });
         
         // Track download events
         function trackDownload(url) {
@@ -60,6 +62,26 @@ HTML_TEMPLATE = """
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2184814096326522"
          crossorigin="anonymous"></script>
+    
+    <!-- Google Consent Mode & CMP -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        
+        // Default consent state (denied until user consents)
+        gtag('consent', 'default', {
+            'ad_storage': 'denied',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied',
+            'analytics_storage': 'denied'
+        });
+        
+        gtag('js', new Date());
+    </script>
+    
+    <!-- Google Funding Choices (CMP) -->
+    <script async src="https://fundingchoicesmessages.google.com/i/pub-2184814096326522?ers=1" nonce="RANDOM_NONCE"></script>
+    <script nonce="RANDOM_NONCE">(function() {function signalGooglefcPresent() {if (!window.frames['googlefcPresent']) {if (document.body) {const iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe);} else {setTimeout(signalGooglefcPresent, 0);}}}signalGooglefcPresent();})();</script>
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
