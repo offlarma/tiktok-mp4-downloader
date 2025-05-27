@@ -513,8 +513,8 @@ BLOG_POST_4_TEMPLATE = """
 </body>
 </html>
 """
- 
- HTML_TEMPLATE = """
+
+HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
