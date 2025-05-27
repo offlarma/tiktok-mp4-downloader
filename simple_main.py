@@ -566,9 +566,12 @@ HTML_TEMPLATE = """
     </script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5Q7ZFCF4K8"></script>
     
-    <!-- Google AdSense -->
+    <!-- Google AdSense - Ottimizzato -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2184814096326522"
          crossorigin="anonymous"></script>
+    <script>
+        window.adsbygoogle = window.adsbygoogle || [];
+    </script>
     
     <!-- Google Funding Choices (CMP) -->
     <script async src="https://fundingchoicesmessages.google.com/i/pub-2184814096326522?ers=1" nonce="RANDOM_NONCE"></script>
@@ -978,12 +981,12 @@ HTML_TEMPLATE = """
         <div class="error" id="error"></div>
     </div>
     
-    <!-- AdSense Banner Top -->
+        <!-- AdSense Banner Top -->
     <div style="text-align: center; margin: 20px 0; max-width: 420px;">
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-2184814096326522"
-             data-ad-slot="AUTO"
+             data-ad-slot="1234567890"
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
     </div>
@@ -1031,7 +1034,7 @@ HTML_TEMPLATE = """
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-2184814096326522"
-             data-ad-slot="AUTO"
+             data-ad-slot="9876543210"
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
     </div>
@@ -1174,8 +1177,12 @@ HTML_TEMPLATE = """
         observer.observe(document.getElementById('error'), { attributes: true });
         
         // Initialize AdSense ads
-        (adsbygoogle = window.adsbygoogle || []).push({});
-        (adsbygoogle = window.adsbygoogle || []).push({});
+        try {
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (e) {
+            console.log('AdSense not ready yet');
+        }
     </script>
 </body>
 </html>
@@ -1564,6 +1571,11 @@ async def blog_post_3():
 @app.get("/blog/how-to-download-tik-tok-video-without-watermark", response_class=HTMLResponse)
 async def blog_post_4():
     return HTMLResponse(content=BLOG_POST_4_TEMPLATE)
+
+@app.get("/ads.txt")
+async def ads_txt():
+    """Serve ads.txt file for Google AdSense"""
+    return "google.com, pub-2184814096326522, DIRECT, f08c47fec0942fa0"
 
 if __name__ == "__main__":
     import uvicorn
