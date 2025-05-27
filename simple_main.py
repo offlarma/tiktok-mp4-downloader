@@ -54,94 +54,144 @@ HTML_TEMPLATE = """
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 25%, #45b7d1 50%, #96ceb4 75%, #feca57 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 15px;
             overflow-x: hidden;
         }
         
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
         .container {
-            background: white;
-            padding: 30px 25px;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            max-width: 400px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 35px 30px;
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.1);
+            max-width: 420px;
             width: 100%;
             text-align: center;
             position: relative;
+            border: 2px solid rgba(255,255,255,0.2);
+            animation: containerFloat 6s ease-in-out infinite;
+        }
+        
+        @keyframes containerFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
         
         h1 {
-            color: #333;
-            margin-bottom: 8px;
-            font-size: 2.2em;
-            font-weight: 700;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 800;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            animation: titlePulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes titlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
         
         .subtitle {
-            color: #666;
+            color: #555;
             margin-bottom: 25px;
-            font-size: 1em;
+            font-size: 1.1em;
             line-height: 1.4;
+            font-weight: 500;
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         input[type="url"] {
             width: 100%;
-            padding: 16px 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 12px;
+            padding: 18px 20px;
+            border: 3px solid transparent;
+            background: linear-gradient(white, white) padding-box, 
+                        linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1) border-box;
+            border-radius: 15px;
             font-size: 16px;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
             -webkit-appearance: none;
             appearance: none;
-            background: #fff;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
         }
         
         input[type="url"]:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+            background: linear-gradient(white, white) padding-box, 
+                        linear-gradient(135deg, #4ecdc4, #45b7d1, #96ceb4) border-box;
         }
         
         .download-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 50%, #45b7d1 100%);
+            background-size: 200% 200%;
             color: white;
             border: none;
-            padding: 16px 30px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
+            padding: 18px 35px;
+            border-radius: 15px;
+            font-size: 17px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             width: 100%;
-            min-height: 54px;
+            min-height: 60px;
             -webkit-appearance: none;
             appearance: none;
             touch-action: manipulation;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: buttonGlow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes buttonGlow {
+            from { box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3); }
+            to { box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4); }
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            background-position: 100% 0;
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
         }
         
         .download-btn:active {
-            transform: scale(0.98);
+            transform: translateY(-1px);
         }
         
         .download-btn:disabled {
-            opacity: 0.6;
+            opacity: 0.7;
             cursor: not-allowed;
             transform: none;
+            animation: none;
         }
         
         .loading {
             display: none;
             margin-top: 20px;
-            color: #666;
-            font-size: 14px;
+            color: #555;
+            font-size: 15px;
+            font-weight: 500;
         }
         
         .error {
@@ -149,10 +199,11 @@ HTML_TEMPLATE = """
             margin-top: 15px;
             display: none;
             font-size: 14px;
-            padding: 12px;
-            background: #fdf2f2;
-            border-radius: 8px;
-            border: 1px solid #fecaca;
+            padding: 15px;
+            background: linear-gradient(135deg, #fdf2f2, #fef5f5);
+            border-radius: 12px;
+            border: 2px solid #fecaca;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.1);
         }
         
         .success {
@@ -160,65 +211,111 @@ HTML_TEMPLATE = """
             margin-top: 15px;
             display: none;
             font-size: 14px;
-            padding: 12px;
-            background: #f0f9f4;
-            border-radius: 8px;
-            border: 1px solid #86efac;
+            padding: 15px;
+            background: linear-gradient(135deg, #f0f9f4, #f7fcf9);
+            border-radius: 12px;
+            border: 2px solid #86efac;
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.1);
         }
         
         .info-box {
-            background: #e8f4fd;
-            border: 1px solid #bee5eb;
-            border-radius: 10px;
-            padding: 15px;
+            background: linear-gradient(135deg, #e8f4fd, #f0f9ff);
+            border: 2px solid #bee5eb;
+            border-radius: 15px;
+            padding: 18px;
             margin-bottom: 20px;
-            font-size: 13px;
+            font-size: 14px;
             color: #0c5460;
             text-align: left;
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.1);
         }
         
         .warning-box {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 10px;
-            padding: 15px;
+            background: linear-gradient(135deg, #fff3cd, #fef9e7);
+            border: 2px solid #ffeaa7;
+            border-radius: 15px;
+            padding: 18px;
             margin-bottom: 20px;
-            font-size: 13px;
+            font-size: 14px;
             color: #856404;
             text-align: left;
+            box-shadow: 0 5px 15px rgba(254, 202, 87, 0.1);
         }
         
         .warning-box ul {
-            margin: 8px 0 0 16px;
+            margin: 10px 0 0 18px;
             padding: 0;
         }
         
         .warning-box li {
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         
         .progress-bar {
             width: 100%;
-            height: 4px;
-            background-color: #e1e5e9;
-            border-radius: 2px;
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
             margin-top: 15px;
             overflow: hidden;
             display: none;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
         
         .progress-fill {
             height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            background-size: 200% 100%;
             width: 0%;
             transition: width 0.3s ease;
-            animation: progress-animation 2s infinite;
+            animation: progressFlow 2s linear infinite;
         }
         
-        @keyframes progress-animation {
-            0% { width: 0%; }
-            50% { width: 70%; }
-            100% { width: 100%; }
+        @keyframes progressFlow {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .seo-section {
+            max-width: 420px;
+            margin: 25px auto 0;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .seo-section h2 {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            font-size: 1.6em;
+            font-weight: 700;
+        }
+        
+        .seo-section h3 {
+            color: #333;
+            margin: 20px 0 12px 0;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+        
+        .seo-section p, .seo-section li {
+            color: #666;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+        
+        .seo-section ul, .seo-section ol {
+            margin-left: 20px;
+        }
+        
+        .seo-section li {
+            margin-bottom: 6px;
         }
         
         /* Mobile specific optimizations */
@@ -229,31 +326,38 @@ HTML_TEMPLATE = """
             
             .container {
                 padding: 25px 20px;
-                border-radius: 15px;
+                border-radius: 20px;
+                max-width: 100%;
             }
             
             h1 {
-                font-size: 1.8em;
+                font-size: 2.2em;
             }
             
             .subtitle {
-                font-size: 0.9em;
+                font-size: 1em;
             }
             
             input[type="url"] {
-                padding: 14px 12px;
+                padding: 16px 18px;
                 font-size: 16px;
             }
             
             .download-btn {
-                padding: 14px 25px;
-                font-size: 15px;
-                min-height: 50px;
+                padding: 16px 30px;
+                font-size: 16px;
+                min-height: 55px;
             }
             
             .info-box, .warning-box {
-                font-size: 12px;
-                padding: 12px;
+                font-size: 13px;
+                padding: 15px;
+            }
+            
+            .seo-section {
+                margin-top: 20px;
+                padding: 20px;
+                max-width: 100%;
             }
         }
     </style>
@@ -310,15 +414,15 @@ HTML_TEMPLATE = """
     </div>
     
     <!-- SEO Content Section -->
-    <div style="max-width: 400px; margin: 20px auto; padding: 20px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-        <h2 style="color: #333; margin-bottom: 15px; font-size: 1.5em;">🎥 Tik To Mp4 - Best TikTok Video Downloader</h2>
-        <p style="color: #666; line-height: 1.6; margin-bottom: 15px; font-size: 14px;">
+    <div class="seo-section">
+        <h2>🎥 Tik To Mp4 - Best TikTok Video Downloader</h2>
+        <p>
             <strong>Tik To Mp4</strong> is the best free TikTok video downloader that allows you to download TikTok videos without watermark. 
             Our Tik To Mp4 converter works on all devices and provides high-quality MP4 downloads instantly.
         </p>
         
-        <h3 style="color: #333; margin: 20px 0 10px 0; font-size: 1.2em;">✨ Why Choose Tik To Mp4?</h3>
-        <ul style="color: #666; line-height: 1.8; margin-left: 20px; font-size: 13px;">
+        <h3>✨ Why Choose Tik To Mp4?</h3>
+        <ul>
             <li>🚫 <strong>Remove watermark</strong> from TikTok videos automatically</li>
             <li>📱 <strong>Works on mobile</strong>, tablet, and desktop devices</li>
             <li>⚡ <strong>Fast Tik To Mp4 conversion</strong> in seconds</li>
@@ -327,15 +431,15 @@ HTML_TEMPLATE = """
             <li>💾 <strong>High quality MP4</strong> format downloads</li>
         </ul>
         
-        <h3 style="color: #333; margin: 20px 0 10px 0; font-size: 1.2em;">📋 How to use Tik To Mp4:</h3>
-        <ol style="color: #666; line-height: 1.8; margin-left: 20px; font-size: 13px;">
+        <h3>📋 How to use Tik To Mp4:</h3>
+        <ol>
             <li>Copy the TikTok video URL from the app or website</li>
             <li>Paste the URL in the Tik To Mp4 converter above</li>
             <li>Click "Download Video" button</li>
             <li>Wait for Tik To Mp4 to process and download your video</li>
         </ol>
         
-        <p style="color: #666; line-height: 1.6; margin-top: 20px; font-size: 12px;">
+        <p style="margin-top: 20px; font-size: 12px;">
             <strong>Keywords:</strong> Tik To Mp4, TikTok downloader, download TikTok video, TikTok to MP4, remove watermark, 
             free TikTok download, Tik To Mp4 converter, TikTok video saver, online TikTok downloader, Tik To Mp4 online
         </p>
