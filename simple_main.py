@@ -367,10 +367,7 @@ HTML_TEMPLATE = """
         <h1>🎵 Tik To Mp4</h1>
         <p class="subtitle">Download TikTok videos without watermark</p>
         
-        <div class="info-box">
-            <strong>✨ FIXED VERSION!</strong><br>
-            POST + Base64 approach - absolutely no redirects possible, pure JavaScript download.
-        </div>
+
         
         <div class="warning-box">
             <strong>📱 Instructions:</strong>
