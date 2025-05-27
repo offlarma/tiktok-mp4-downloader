@@ -2,7 +2,7 @@
 # Replace all placeholder values with your real IDs
 
 # ===== DEPLOYMENT SETTINGS =====
-DOMAIN = "https://your-domain.com"  # Replace with your actual domain
+DOMAIN = "https://tiktomp4.com"  # Replace with your actual domain when you buy it
 APP_NAME = "Tik To Mp4"
 APP_DESCRIPTION = "Free TikTok video downloader without watermark"
 

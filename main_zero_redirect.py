@@ -1,7 +1,6 @@
 import os
 import tempfile
 import asyncio
-import base64
 from pathlib import Path
 from typing import Optional
 import requests
@@ -11,20 +10,16 @@ import aiohttp
 import aiofiles
 from urllib.parse import unquote
 
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import HTMLResponse, JSONResponse
-from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi.responses import HTMLResponse, StreamingResponse, JSONResponse
 
 app = FastAPI(
     title="Tik To Mp4",
     description="Download TikTok videos without watermark",
-    version="5.0.0"
+    version="4.0.0"
 )
 
-class DownloadRequest(BaseModel):
-    url: str
-
-# HTML template con approccio POST e base64
+# HTML template con approccio fetch invece di link diretto
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="en">
@@ -253,8 +248,8 @@ HTML_TEMPLATE = """
         <p class="subtitle">Download TikTok videos without watermark</p>
         
         <div class="info-box">
-            <strong>✨ Ultimate Fix!</strong><br>
-            POST + Base64 approach - absolutely no redirects possible, pure JavaScript download.
+            <strong>✨ Zero Redirect System!</strong><br>
+            New streaming approach - no redirects, no external sites, direct download.
         </div>
         
         <div class="warning-box">
@@ -262,8 +257,8 @@ HTML_TEMPLATE = """
             <ul>
                 <li>Copy the TikTok link from the app</li>
                 <li>Paste it in the field below</li>
-                <li>Tap download and wait (processing takes 30-90 seconds)</li>
-                <li>Video downloads via pure JavaScript</li>
+                <li>Tap download and wait (processing takes 20-60 seconds)</li>
+                <li>Video streams directly to your device</li>
             </ul>
         </div>
         
@@ -290,8 +285,8 @@ HTML_TEMPLATE = """
         </div>
         
         <div class="loading" id="loading">
-            <p>🔄 Processing via POST... Please wait</p>
-            <small>Base64 transfer - no redirects possible (30-90 seconds)</small>
+            <p>🔄 Streaming video... Please wait</p>
+            <small>Zero redirects - streaming directly (20-60 seconds)</small>
         </div>
         
         <div class="success" id="success"></div>
@@ -327,55 +322,45 @@ HTML_TEMPLATE = """
                 cleanUrl = cleanUrl.replace(/[?&]timestamp=[^&]*/, '');
                 cleanUrl = cleanUrl.replace(/[?&]enter_method=[^&]*/, '');
                 
-                // Use POST request with JSON
-                const response = await fetch('/download-post', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        url: cleanUrl
-                    })
-                });
+                // Use streaming endpoint
+                const streamUrl = `/stream-download?url=${encodeURIComponent(cleanUrl)}`;
+                
+                // Fetch with streaming response
+                const response = await fetch(streamUrl);
                 
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.detail || `Server error: ${response.status}`);
+                    throw new Error(`Server error: ${response.status}`);
                 }
                 
-                const data = await response.json();
-                
-                if (data.success && data.video_data) {
-                    // Decode base64 data
-                    const binaryString = atob(data.video_data);
-                    const bytes = new Uint8Array(binaryString.length);
-                    for (let i = 0; i < binaryString.length; i++) {
-                        bytes[i] = binaryString.charCodeAt(i);
+                // Get filename from headers
+                const contentDisposition = response.headers.get('content-disposition');
+                let filename = 'tiktok_video.mp4';
+                if (contentDisposition) {
+                    const filenameMatch = contentDisposition.match(/filename="([^"]+)"/);
+                    if (filenameMatch) {
+                        filename = filenameMatch[1];
                     }
-                    
-                    // Create blob
-                    const blob = new Blob([bytes], { type: 'video/mp4' });
-                    
-                    // Create download link
-                    const downloadUrl = window.URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = downloadUrl;
-                    link.download = data.filename || 'tiktok_video.mp4';
-                    link.style.display = 'none';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    
-                    // Clean up
-                    window.URL.revokeObjectURL(downloadUrl);
-                    
-                    // Show success
-                    success.textContent = '✅ Download completed! Check your downloads folder.';
-                    success.style.display = 'block';
-                } else {
-                    throw new Error(data.message || 'Failed to process video');
                 }
                 
+                // Create blob from response
+                const blob = await response.blob();
+                
+                // Create download link
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = filename;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Clean up
+                window.URL.revokeObjectURL(downloadUrl);
+                
+                // Show success
+                success.textContent = '✅ Download completed! Check your downloads folder.';
+                success.style.display = 'block';
                 loading.style.display = 'none';
                 progressBar.style.display = 'none';
                 downloadBtn.disabled = false;
@@ -399,7 +384,7 @@ HTML_TEMPLATE = """
                 if (element.style.display !== 'none') {
                     element.style.display = 'none';
                 }
-            }, 12000);
+            }, 10000);
         }
         
         const observer = new MutationObserver(function(mutations) {
@@ -422,7 +407,7 @@ HTML_TEMPLATE = """
 </html>
 """
 
-class UltimateDownloader:
+class ZeroRedirectDownloader:
     def __init__(self):
         self.session = None
         self.headers = {
@@ -442,7 +427,7 @@ class UltimateDownloader:
     async def create_session(self):
         if not self.session:
             connector = aiohttp.TCPConnector(limit=10, limit_per_host=5)
-            timeout = aiohttp.ClientTimeout(total=90)
+            timeout = aiohttp.ClientTimeout(total=60)
             self.session = aiohttp.ClientSession(
                 connector=connector,
                 timeout=timeout,
@@ -558,7 +543,7 @@ class UltimateDownloader:
         title = search_title(data)
         return title if title else 'tiktok_video'
 
-    async def download_video_bytes(self, download_url: str) -> Optional[bytes]:
+    async def stream_video_download(self, download_url: str) -> Optional[bytes]:
         try:
             session = await self.create_session()
             
@@ -572,10 +557,10 @@ class UltimateDownloader:
                     video_data = await response.read()
                     return video_data
         except Exception as e:
-            print(f"Download failed: {e}")
+            print(f"Stream download failed: {e}")
         return None
 
-    async def get_video_base64(self, url: str) -> Optional[dict]:
+    async def get_video_data(self, url: str) -> Optional[tuple]:
         try:
             result = await self.scrape_tiktok_page(url)
             if result and result.get('success'):
@@ -583,20 +568,13 @@ class UltimateDownloader:
                 safe_title = "".join(c for c in title if c.isalnum() or c in (' ', '-', '_')).strip()
                 safe_title = safe_title[:50] if safe_title else 'tiktok_video'
                 
-                video_data = await self.download_video_bytes(result['download_url'])
+                video_data = await self.stream_video_download(result['download_url'])
                 
                 if video_data:
-                    # Convert to base64
-                    video_base64 = base64.b64encode(video_data).decode('utf-8')
-                    return {
-                        'success': True,
-                        'video_data': video_base64,
-                        'filename': f"{safe_title}.mp4",
-                        'size': len(video_data)
-                    }
+                    return video_data, safe_title
             return None
         except Exception as e:
-            print(f"Get video base64 error: {e}")
+            print(f"Get video data error: {e}")
             return None
         finally:
             await self.close_session()
@@ -605,14 +583,12 @@ class UltimateDownloader:
 async def get_homepage():
     return HTMLResponse(content=HTML_TEMPLATE)
 
-@app.post("/download-post")
-async def download_post(request: Request, download_request: DownloadRequest):
-    """POST download with base64 response - absolutely no redirects"""
+@app.get("/stream-download")
+async def stream_download(request: Request, url: str = Query(..., description="TikTok video URL")):
+    """Stream download - zero redirects approach"""
     
     user_agent = request.headers.get("user-agent", "").lower()
     is_mobile_request = any(device in user_agent for device in ["mobile", "android", "iphone", "ipad"])
-    
-    url = download_request.url.strip()
     
     if not url:
         raise HTTPException(status_code=400, detail="Please provide a TikTok URL")
@@ -634,55 +610,64 @@ async def download_post(request: Request, download_request: DownloadRequest):
         url = url.split('?')[0]
     
     try:
-        print(f"🔍 POST processing: {url} (Mobile: {is_mobile_request})")
+        print(f"🔍 Stream processing: {url} (Mobile: {is_mobile_request})")
         
-        downloader = UltimateDownloader()
-        result = await downloader.get_video_base64(url)
+        downloader = ZeroRedirectDownloader()
+        result = await downloader.get_video_data(url)
         
-        if result and result.get('success'):
-            print(f"✅ POST download successful: {result['size']} bytes")
+        if result:
+            video_data, safe_title = result
+            print(f"✅ Stream download successful: {len(video_data)} bytes")
             
-            return JSONResponse(content={
-                "success": True,
-                "video_data": result['video_data'],
-                "filename": result['filename'],
-                "size": result['size'],
-                "message": "Video processed successfully"
-            })
+            # Create streaming response
+            def generate():
+                yield video_data
+            
+            headers = {
+                "Content-Disposition": f'attachment; filename="{safe_title}.mp4"',
+                "Content-Type": "video/mp4",
+                "Content-Length": str(len(video_data)),
+            }
+            
+            if is_mobile_request:
+                headers.update({
+                    "Cache-Control": "no-cache, no-store, must-revalidate",
+                    "Pragma": "no-cache",
+                    "Expires": "0",
+                })
+            
+            return StreamingResponse(
+                generate(),
+                media_type='video/mp4',
+                headers=headers
+            )
         else:
-            return JSONResponse(
-                status_code=500,
-                content={
-                    "success": False,
-                    "message": "Failed to process video. The video might be private or unavailable."
-                }
+            raise HTTPException(
+                status_code=500, 
+                detail="Failed to process video. The video might be private or unavailable."
             )
         
     except Exception as e:
-        print(f"❌ POST processing error: {e}")
-        return JSONResponse(
-            status_code=500,
-            content={
-                "success": False,
-                "message": "Failed to process video. Please try a different video or try again later."
-            }
+        print(f"❌ Stream processing error: {e}")
+        raise HTTPException(
+            status_code=500, 
+            detail="Failed to process video. Please try a different video or try again later."
         )
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "version": "5.0.0", "message": "Ultimate POST + Base64 system running"}
+    return {"status": "healthy", "version": "4.0.0", "message": "Zero redirect streaming system running"}
 
 @app.get("/test")
 async def test_endpoint():
     return {
         "status": "ok",
-        "message": "Ultimate POST + Base64 system active",
+        "message": "Zero redirect streaming system active",
         "features": [
-            "POST requests only",
-            "Base64 encoding", 
-            "JSON responses",
-            "Pure JavaScript download",
-            "Absolutely no redirects possible"
+            "Zero redirects",
+            "Streaming response", 
+            "No FileResponse",
+            "Direct memory transfer"
         ]
     }
 
