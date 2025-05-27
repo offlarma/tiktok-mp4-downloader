@@ -532,14 +532,27 @@ HTML_TEMPLATE = """
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%23ff6b6b;stop-opacity:1' /><stop offset='50%25' style='stop-color:%234ecdc4;stop-opacity:1' /><stop offset='100%25' style='stop-color:%2345b7d1;stop-opacity:1' /></linearGradient></defs><circle cx='50' cy='50' r='45' fill='url(%23grad1)' stroke='white' stroke-width='3'/><text x='50' y='65' font-family='Arial, sans-serif' font-size='45' font-weight='bold' text-anchor='middle' fill='white'>🎵</text></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%23ff6b6b;stop-opacity:1' /><stop offset='50%25' style='stop-color:%234ecdc4;stop-opacity:1' /><stop offset='100%25' style='stop-color:%2345b7d1;stop-opacity:1' /></linearGradient></defs><circle cx='50' cy='50' r='45' fill='url(%23grad1)' stroke='white' stroke-width='3'/><text x='50' y='65' font-family='Arial, sans-serif' font-size='45' font-weight='bold' text-anchor='middle' fill='white'>🎵</text></svg>">
     
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5Q7ZFCF4K8"></script>
+    <!-- Google Analytics - ORDINE CORRETTO -->
     <script>
-        // gtag already initialized above with consent mode
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        
+        // Inizializza gtag PRIMA di tutto
+        gtag('js', new Date());
+        
+        // Consent mode PERMISSIVO per analytics
+        gtag('consent', 'default', {
+            'ad_storage': 'granted',
+            'ad_user_data': 'granted', 
+            'ad_personalization': 'granted',
+            'analytics_storage': 'granted'
+        });
+        
+        // Configura Analytics
         gtag('config', 'G-5Q7ZFCF4K8', {
             'anonymize_ip': true,
-            'allow_google_signals': false,
-            'allow_ad_personalization_signals': false
+            'allow_google_signals': true,
+            'allow_ad_personalization_signals': true
         });
         
         // Track download events
@@ -551,26 +564,11 @@ HTML_TEMPLATE = """
             });
         }
     </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5Q7ZFCF4K8"></script>
     
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2184814096326522"
          crossorigin="anonymous"></script>
-    
-    <!-- Google Consent Mode & CMP -->
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        
-        // Default consent state (denied until user consents)
-        gtag('consent', 'default', {
-            'ad_storage': 'denied',
-            'ad_user_data': 'denied',
-            'ad_personalization': 'denied',
-            'analytics_storage': 'denied'
-        });
-        
-        gtag('js', new Date());
-    </script>
     
     <!-- Google Funding Choices (CMP) -->
     <script async src="https://fundingchoicesmessages.google.com/i/pub-2184814096326522?ers=1" nonce="RANDOM_NONCE"></script>
@@ -1039,6 +1037,14 @@ HTML_TEMPLATE = """
     </div>
 
     <script>
+        // Track page view
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_view', {
+                'page_title': 'Tik To Mp4 Homepage',
+                'page_location': window.location.href
+            });
+        }
+        
         document.getElementById('downloadForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
